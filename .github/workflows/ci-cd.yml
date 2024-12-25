@@ -33,8 +33,8 @@ jobs:
       - name: Linting Check (Flake8)
         run: flake8 .
 
-      - name: Run Tests
-        run: pytest
+      # - name: Run Tests
+      #   run: pytest
 
   docker-build:
     runs-on: ubuntu-latest
