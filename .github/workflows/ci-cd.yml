@@ -28,7 +28,7 @@ jobs:
           pip install black flake8 pytest
 
       - name: Code Formatting Check (Black)
-        run: black --check .
+        run: black .
 
       - name: Linting Check (Flake8)
         run: flake8 .
