@@ -4,9 +4,9 @@ WORKDIR /app
 
 COPY . /app
 
+RUN apt-get update && apt-get install -y libpq-dev build-essential
 RUN pip install -r requirements.txt
-
-COPY . .
+RUN pip install psycopg2-binary
 
 EXPOSE 8000
 
