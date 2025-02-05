@@ -14,16 +14,16 @@ Additionally, user of this project can grant roles, make changes, and according 
 
 ## Installation
 
-1. Clone the repository from GitHub:
-  ```bash
-     git clone https://github.com/brankadi/epam_project.git
-     cd epam_project
-2. Set up a PostgreSQL database:
-  1)	Ensure PostgreSQL is installed 
-  2)	Run PostfreSQL inside Docker conteinter:
-      Create .env file in root directory and change password with your own password to protect database:
-      DATABASE_URL=postgresql://postgres:<your-password>@localhost:5432/mydatabase
-3. Run the Docker - docker-compose.yml:
+  1. Clone the repository from GitHub:
+    ```bash
+       git clone https://github.com/brankadi/epam_project.git
+       cd epam_project
+  2. Set up a PostgreSQL database:
+    1)	Ensure PostgreSQL is installed 
+    2)	Run PostfreSQL inside Docker conteinter:
+        Create .env file in root directory and change password with your own password to protect database:
+        DATABASE_URL=postgresql://postgres:<your-password>@localhost:5432/mydatabase
+  3. Run the Docker - docker-compose.yml:
     docker-compose up --build
 
 ## Usage
