@@ -3,7 +3,6 @@ from typing import Optional
 
 from sqlalchemy import Integer, String, Boolean, ForeignKey, Enum, DateTime, func
 from sqlalchemy.orm import relationship, Mapped, mapped_column
-from pydantic import BaseModel
 
 from db import Base
 
@@ -19,7 +18,7 @@ class User(Base):
 
     projects: Mapped[list["Project"]] = relationship('Project', back_populates='owner', foreign_keys='Project.owner_id')
     modified_projects: Mapped[list["Project"]] = relationship('Project', back_populates="modified_by_user", foreign_keys='Project.modified_by')
-    modified_document: Mapped[list["Document"]] = relationship('Document', back_populates="modified_by_user", foreign_keys='Document.modified_by')
+    modified_documents: Mapped[list["Document"]] = relationship('Document', back_populates="modified_by_user", foreign_keys='Document.modified_by')
     user_projects: Mapped[list["UserProject"]] = relationship("UserProject", back_populates="user")
 
 class Project(Base):
@@ -65,7 +64,7 @@ class Document(Base):
     modified_by: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'))
 
     project: Mapped["Project"] = relationship('Project', back_populates='documents')
-    modified_by_user: Mapped["User"] = relationship("User", back_populates="modified_projects", foreign_keys=[modified_by])
+    modified_by_user: Mapped["User"] = relationship("User", back_populates="modified_documents", foreign_keys=[modified_by])
 
 class Invitation(Base):
     __tablename__ = 'invitations'

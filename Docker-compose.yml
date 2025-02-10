@@ -1,4 +1,16 @@
 services:
+
+  app:
+    build:
+      context: .
+    container_name: app_container
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+
   db:
     image: postgres
     container_name: postgres_container
@@ -11,17 +23,6 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-
-  app:
-    build:
-      context: .
-    container_name: app_container
-    environment:
-      DATABASE_URL: ${DATABASE_URL}
-    depends_on:
-      - db
-    ports:
-      - "8000:8000"
 
 volumes:
   postgres_data:

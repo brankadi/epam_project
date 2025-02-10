@@ -3,7 +3,6 @@ from typing import List, Optional
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
 
 from auth import get_current_user, create_access_token
 from db import get_db
@@ -11,46 +10,15 @@ import projects
 import users
 import documents
 from models import User
-
-class UserCreate(BaseModel):
-    username: str
-    password: str
-    name: str
-    surname: Optional[str] = None
-    email: str
-
-    model_config = {"from_attributes": True}
-
-class UserFinal(BaseModel):
-    id: int
-    username: str
-    name: str
-    surname: Optional[str] = None
-    email: str
-
-    model_config = {"from_attributes": True}
-
-class ProjectFinal(BaseModel):
-    id: int
-    name: str
-    description: str
-    owner_id: int
-
-    model_config = {"from_attributes": True}
-
-class DocumentFinal(BaseModel):
-    id: int
-    name: str
-    type: str
-    path: str
-    project_id: int
-    modified_by: int
-
-    model_config = {"from_attributes": True}
-    
+from schemas import UserCreate, UserFinal, ProjectFinal, DocumentFinal
 
 app = FastAPI()
     
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello, World!"}
+
 @app.post("/auth", response_model=UserFinal)
 def register_user(
     user: UserCreate, 
