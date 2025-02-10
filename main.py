@@ -76,7 +76,7 @@ def register_user(
     user: UserCreate, 
     db_session: Session = Depends(db.get_db)
     ):
-    db_user = db_session.query(User).filter(User.username == user.username).limit(1).first()
+    db_user = db_session.query(User).filter(User.username == user.username).first()
     if db_user:
         raise HTTPException(
             status_code=400, 
