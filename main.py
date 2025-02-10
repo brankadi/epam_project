@@ -14,7 +14,7 @@ from schemas import UserCreate, UserFinal, ProjectFinal, DocumentFinal
 
 app = FastAPI()
     
-
+    
 @app.get("/")
 def read_root():
     return {"message": "Hello, World!"}
