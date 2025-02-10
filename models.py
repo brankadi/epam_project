@@ -7,32 +7,6 @@ from pydantic import BaseModel
 
 from db import Base
 
-class UserCreate(BaseModel):
-    username: str
-    password: str
-    name: str
-    surname: Optional[str] = None
-    email: str
-
-    model_config = {"from_attributes": True}
-
-class UserFinal(BaseModel):
-    id: int
-    username: str
-    name: str
-    surname: Optional[str] = None
-    email: str
-
-    model_config = {"from_attributes": True}
-
-class ProjectFinal(BaseModel):
-    id: int
-    name: str
-    description: str
-    owner_id: int
-
-    model_config = {"from_attributes": True}
-
 class User(Base):
     __tablename__ = 'users'
 
@@ -45,6 +19,7 @@ class User(Base):
 
     projects: Mapped[list["Project"]] = relationship('Project', back_populates='owner', foreign_keys='Project.owner_id')
     modified_projects: Mapped[list["Project"]] = relationship('Project', back_populates="modified_by_user", foreign_keys='Project.modified_by')
+    modified_document: Mapped[list["Document"]] = relationship('Document', back_populates="modified_by_user", foreign_keys='Document.modified_by')
     user_projects: Mapped[list["UserProject"]] = relationship("UserProject", back_populates="user")
 
 class Project(Base):
@@ -56,7 +31,7 @@ class Project(Base):
     owner_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
     created_at: Mapped[DateTime] = mapped_column(DateTime, default=func.now())
     updated_at: Mapped[DateTime] = mapped_column(DateTime, default=func.now(), onupdate=func.now())
-    modified_by: Mapped[str] = mapped_column(String, ForeignKey('users.id'))
+    modified_by: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'))
 
     owner: Mapped["User"] = relationship('User', back_populates='projects', foreign_keys=[owner_id])
     modified_by_user: Mapped["User"] = relationship("User", back_populates="modified_projects", foreign_keys=[modified_by])
@@ -87,8 +62,10 @@ class Document(Base):
     type: Mapped[str] = mapped_column(String)
     path: Mapped[str] = mapped_column(String, nullable=False)
     project_id: Mapped[int] = mapped_column(Integer, ForeignKey('projects.id'), nullable=False)
+    modified_by: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'))
 
     project: Mapped["Project"] = relationship('Project', back_populates='documents')
+    modified_by_user: Mapped["User"] = relationship("User", back_populates="modified_projects", foreign_keys=[modified_by])
 
 class Invitation(Base):
     __tablename__ = 'invitations'
