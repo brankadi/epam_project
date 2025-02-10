@@ -14,10 +14,6 @@ from schemas import UserCreate, UserFinal, ProjectFinal, DocumentFinal
 
 app = FastAPI()
     
-    
-@app.get("/")
-def read_root():
-    return {"message": "Hello, World!"}
 
 @app.post("/auth", response_model=UserFinal)
 def register_user(
