@@ -1,7 +1,6 @@
 from datetime import datetime, timezone
 
 from sqlalchemy.orm import Session
-from sqlalchemy import DateTime
 from fastapi import Depends
 
 from models import User, UserProject, Project, Role
@@ -12,7 +11,8 @@ def create_project(
         name: str, 
         description: str,
         owner_id: int,
-        created_at: datetime
+        created_at: datetime,
+        modified_by: str = 'admin'
         ):
     created_at = created_at or datetime.now(timezone.utc)
     
@@ -20,7 +20,8 @@ def create_project(
         name=name, 
         description=description, 
         owner_id=owner_id,
-        created_at=created_at
+        created_at=created_at,
+        modified_by=modified_by
         )
     db_session.add(db_project)
     db_session.commit()
@@ -93,8 +94,8 @@ def update_project(
         name: str, 
         description: str, 
         owner_id: int, 
-        current_user: User = Depends(get_user),
-        updated_at: DateTime = None,
+        updated_at: datetime,
+        current_user: User = Depends(get_user)
         ):
     updated_at = updated_at or datetime.now(timezone.utc)
     db_project = db_session.query(Project).filter(
