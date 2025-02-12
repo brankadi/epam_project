@@ -1,19 +1,21 @@
-from typing import List, Optional
+from typing import List
+from datetime import datetime
 
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from auth import get_current_user, create_access_token
-from db import get_db
+from db import get_db, init_db
 import projects
 import users
 import documents
 from models import User
 from schemas import UserCreate, UserFinal, ProjectFinal, DocumentFinal
 
-app = FastAPI()
-    
+init_db()
+
+app = FastAPI()  
 
 @app.post("/auth", response_model=UserFinal)
 def register_user(
@@ -29,8 +31,8 @@ def register_user(
             detail="Username already registered!"
             )
     db_user = users.create_user(
-        db=db_session, 
-        user=user
+        db_session, 
+        user
         )
     return db_user
 
@@ -67,11 +69,14 @@ def create_project(
     db_session: Session = Depends(get_db), 
     current_user: User = Depends(get_current_user)
     ):
+    created_at = project.created_at or datetime.now()
+    owner_id = current_user.id
     db_project = projects.create_project(
-        db_session, project.name, 
+        db_session, 
+        project.name, 
         project.description, 
-        project.owner_id, 
-        modified_by=current_user.username
+        owner_id, 
+        created_at=created_at
         )
     if db_project:
         return ProjectFinal.model_validate(db_project)

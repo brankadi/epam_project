@@ -9,7 +9,7 @@ from jose import JWTError, jwt
 
 from db import get_db
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 load_dotenv() 
 
@@ -26,7 +26,7 @@ def create_access_token(data: dict) -> str:
     to_encode.update(
         {
             "exp": expire,
-            "sub": data["sub"],
+            "sub": str(data["sub"]),
             "token_type": "bearer"}
             )
     encoded_jwt = jwt.encode(
@@ -70,6 +70,7 @@ def get_current_user(
             status_code=status.HTTP_401_UNAUTHORIZED, 
             detail="User not found."
             )
+    print(user)
     return user
 
     

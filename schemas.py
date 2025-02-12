@@ -1,6 +1,7 @@
 from typing import Optional
 
 from pydantic import BaseModel
+from datetime import datetime
 
 class UserCreate(BaseModel):
     username: str
@@ -21,19 +22,16 @@ class UserFinal(BaseModel):
     model_config = {"from_attributes": True}
 
 class ProjectFinal(BaseModel):
-    id: int
     name: str
     description: str
-    owner_id: int
+    created_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
 
 class DocumentFinal(BaseModel):
-    id: int
     name: str
     type: str
     path: str
     project_id: int
-    modified_by: int
 
     model_config = {"from_attributes": True}

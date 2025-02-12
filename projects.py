@@ -1,30 +1,39 @@
+from datetime import datetime, timezone
+
 from sqlalchemy.orm import Session
 from sqlalchemy import DateTime
 from fastapi import Depends
 
-from models import User, UserProject, Project
+from models import User, UserProject, Project, Role
 from users import get_user
 
 def create_project(
         db_session: Session, 
         name: str, 
-        description: str, 
-        owner_id: int, 
-        created_at: DateTime, 
-        updated_at: DateTime, 
-        modifed_by: str
+        description: str,
+        owner_id: int,
+        created_at: datetime
         ):
+    created_at = created_at or datetime.now(timezone.utc)
+    
     db_project = Project(
         name=name, 
         description=description, 
         owner_id=owner_id,
-        created_at=created_at, 
-        updated_at=updated_at, 
-        modifed_by=modifed_by 
+        created_at=created_at
         )
     db_session.add(db_project)
     db_session.commit()
     db_session.refresh(db_project)
+
+    db_user_project = UserProject(
+        user_id=owner_id, 
+        project_id=db_project.id, 
+        role=Role.owner
+        )
+    db_session.add(db_user_project)
+    db_session.commit()
+
     return db_project
 
 def add_user_to_project(
@@ -84,16 +93,21 @@ def update_project(
         name: str, 
         description: str, 
         owner_id: int, 
-        current_user: User = Depends(get_user)
+        current_user: User = Depends(get_user),
+        updated_at: DateTime = None,
         ):
+    updated_at = updated_at or datetime.now(timezone.utc)
     db_project = db_session.query(Project).filter(
         Project.id == project_id
         ).first()
+    
     if db_project:
         db_project.name = name
         db_project.description = description
         db_project.owner_id = owner_id
         db_project.modified_by = current_user.username
+        db_project.updated_at = updated_at
+
         db_session.commit()
         db_session.refresh(db_project)
         return db_project

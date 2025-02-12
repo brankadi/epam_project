@@ -22,6 +22,7 @@ def create_user(db_session: Session, user: UserCreate):
     db_session.add(db_user)
     db_session.commit()
     db_session.refresh(db_user)
+    print(f"User created: {db_user.id}, {db_user.username}")
     return db_user
 
 def verify_password(
